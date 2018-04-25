@@ -125,7 +125,7 @@ MySQL hiếm khi sử dụng nhiều hơn một chỉ mục tại một thời �
             Extra: Using where
     
 
-## "H"
+## "Hợp nhất phần giao của các chỉ mục"
 
 OK,Vậy bạn thực sự thông minh và quyết định rằng MySQL đủ thông minh để sử dụng cả hai chỉ mục tên để t được câu trả lời. Điều này được gọi là "intersect". 1. Sử dụng INDEX (last_name), tìm 2 mục chỉ mục với last_name = 'Johnson'; nhận được (7, 17) 2. Sử dụng INDEX (first_name), tìm 2 mục chỉ mục với first_name = 'Andrew'; nhận được (17, 36) 3. "Và" hai danh sách cùng nhau (7,17) & (17,36) = (17) 4. Tiếp cận dữ liệu bằng cách sử dụng seq = (17) để lấy hàng cho Andrew Johnson. 5. Cung cấp câu trả lời (1865-1869).
     
