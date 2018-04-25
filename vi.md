@@ -4,7 +4,7 @@
 
 ## Một bài học nhỏ trong "chỉ số hợp nhất" ("chỉ số tổng hợp")
 
-Tài liệu này bắt đầu có vẻ tầm thường và nhàm chán, nhưng xây dựng lên các thông tin thú vị hơn, có lẽ những điều bạn không nhận ra về cách MariaDB và chỉ mục MySQL hoạt động.
+Tài liệu này bắt đầu có vẻ tầm thường và nhàm chán, nhưng càng về sau xây dựng lên các thông tin thú vị hơn về những điều có lẽ bạn chưa biết về cách hoạt động của chỉ mục trong MariaDB và MySQL.
 
 Điều này cũng giải thích [EXPLAIN][1] (đến một mức độ nào đó).
 
@@ -125,9 +125,9 @@ MySQL hiếm khi sử dụng nhiều hơn một chỉ mục tại một thời �
             Extra: Using where
     
 
-## "Giao lộ các chỉ mục hợp nhất"
+## "H"
 
-OK,Vậy bạn thực sự thông minh và quyết định rằng MySQL nên đủ thông minh để sử dụng cả hai chỉ mục tên để nhận được câu trả lời. Điều này được gọi là "intersect". 1. Sử dụng INDEX (last_name), tìm 2 mục chỉ mục với last_name = 'Johnson'; nhận được (7, 17) 2. Sử dụng INDEX (first_name), tìm 2 mục chỉ mục với first_name = 'Andrew'; nhận được (17, 36) 3. "Và" hai danh sách cùng nhau (7,17) & (17,36) = (17) 4. Tiếp cận dữ liệu bằng cách sử dụng seq = (17) để lấy hàng cho Andrew Johnson. 5. Cung cấp câu trả lời (1865-1869).
+OK,Vậy bạn thực sự thông minh và quyết định rằng MySQL đủ thông minh để sử dụng cả hai chỉ mục tên để t được câu trả lời. Điều này được gọi là "intersect". 1. Sử dụng INDEX (last_name), tìm 2 mục chỉ mục với last_name = 'Johnson'; nhận được (7, 17) 2. Sử dụng INDEX (first_name), tìm 2 mục chỉ mục với first_name = 'Andrew'; nhận được (17, 36) 3. "Và" hai danh sách cùng nhau (7,17) & (17,36) = (17) 4. Tiếp cận dữ liệu bằng cách sử dụng seq = (17) để lấy hàng cho Andrew Johnson. 5. Cung cấp câu trả lời (1865-1869).
     
     
                id: 1
@@ -190,9 +190,9 @@ Mọi thứ đều tương tự như sử dụng "hợp nhất", ngoại trừ v
 
 * Điều gì sẽ xảy ra nếu bạn xáo trộn các trường trong mệnh đề WHERE? Trả lời: Thứ tự của những thứ ANDed không quan trọng.
 * Điều gì sẽ xảy ra nếu bạn xáo trộn các trường trong INDEX? Trả lời: Nó có thể tạo nên sự khác biệt lớn. Xem thêm sau một phút nữa.
-* Điều gì sẽ xảy ra nếu có thêm trường vào cuối? Trả lời: Tác hại tối thiểu; có thể rất nhiều (ví dụ, 'covering'). 
+* Điều gì sẽ xảy ra nếu có thêm trường vào cuối? Trả lời: Tác hại rất ít; có thể mang về rất nhiều lợi ích (ví dụ, 'covering'). 
 * Reduncancy? Đó là, nếu bạn có cả hai thứ này: INDEX (a), INDEX (a, b)? Trả lời: Reduncy trả phí một cái gì đó trên INSERTs; nó hiếm khi hữu ích cho các SELECT.
-* Prefix? Tức là, INDEX (last_name (5). First_name (5)) Trả lời: Đừng bận tâm; nó hiếm khi giúp, và thường đau. (Chi tiết là một chủ đề khác.)
+* Prefix? Tức là, INDEX (last_name (5). First_name (5)) Trả lời: Đừng bận tâm; nó hiếm khi giúp ích, và thường có hại. (Chi tiết là một chủ đề khác.)
 
 ## Nhiều ví dụ hơn:
     
