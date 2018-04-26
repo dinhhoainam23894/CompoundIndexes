@@ -4,13 +4,13 @@
 
 ## Một bài học nhỏ trong "chỉ số hợp nhất" ("chỉ số tổng hợp")
 
-Tài liệu này bắt đầu có vẻ tầm thường và nhàm chán, nhưng xây dựng lên các thông tin thú vị hơn, có lẽ những điều bạn không nhận ra về cách MariaDB và chỉ mục MySQL hoạt động.
+Tài liệu này ban đầu có vẻ tầm thường và nhàm chán, nhưng tạo lên các thông tin thú vị hơn, có lẽ những điều bạn không nhận ra về cách làm việc index trong MariaDB và MySQL.
 
 Điều này cũng giải thích [EXPLAIN][1] (đến một mức độ nào đó).
 
 (Hầu hết điều này cũng áp dụng cho các cơ sở dữ liệu không phải MySQL)
 
-## Truy vấn để thảo luận
+## Thảo luận câu truy vấn 
 
 Câu hỏi đặt ra "Khi nào Andrew Johnson là tổng thống của Hoa Kỳ?".
 
@@ -31,7 +31,7 @@ Bảng `Presidents` có sẵn như sau :
     ...
     
 
-("Andrew Johnson" đã được chọn cho bài học này vì các bản sao.)
+("Andrew Johnson" đã được chọn cho bài học này vì chúng bị trùng lặp.)
 
 Chỉ số nào sẽ là tốt nhất cho câu hỏi đó? Cụ thể hơn, điều tốt nhất cho
     
@@ -51,7 +51,7 @@ một vài INDEX để thử...
 * INDEX(last_name, first_name, term) (a "covering" index) 
 * Variants 
 
-## No indexes
+## Không indexes
 
 Vâng, Tôi đang giả lập 1 chút ở đây. Tôi có 1 PRIMARY KEY trên `seq`, nhưng điều đó không có lợi thế về truy vấn chúng tôi đang nghiên cứu.
     
@@ -125,7 +125,7 @@ MySQL hiếm khi sử dụng nhiều hơn một chỉ mục tại một thời �
             Extra: Using where
     
 
-## "Giao lộ các chỉ mục hợp nhất"
+## "Index Merge Intersect"
 
 OK,Vậy bạn thực sự thông minh và quyết định rằng MySQL nên đủ thông minh để sử dụng cả hai chỉ mục tên để nhận được câu trả lời. Điều này được gọi là "intersect". 1. Sử dụng INDEX (last_name), tìm 2 mục chỉ mục với last_name = 'Johnson'; nhận được (7, 17) 2. Sử dụng INDEX (first_name), tìm 2 mục chỉ mục với first_name = 'Andrew'; nhận được (17, 36) 3. "Và" hai danh sách cùng nhau (7,17) & (17,36) = (17) 4. Tiếp cận dữ liệu bằng cách sử dụng seq = (17) để lấy hàng cho Andrew Johnson. 5. Cung cấp câu trả lời (1865-1869).
     
@@ -189,8 +189,8 @@ Mọi thứ đều tương tự như sử dụng "hợp nhất", ngoại trừ v
 ## Biến thể
 
 * Điều gì sẽ xảy ra nếu bạn xáo trộn các trường trong mệnh đề WHERE? Trả lời: Thứ tự của những thứ ANDed không quan trọng.
-* Điều gì sẽ xảy ra nếu bạn xáo trộn các trường trong INDEX? Trả lời: Nó có thể tạo nên sự khác biệt lớn. Xem thêm sau một phút nữa.
-* Điều gì sẽ xảy ra nếu có thêm trường vào cuối? Trả lời: Tác hại tối thiểu; có thể rất nhiều (ví dụ, 'covering'). 
+* Điều gì sẽ xảy ra nếu bạn xáo trộn các trường trong INDEX? Trả lời: Nó có thể tạo nên sự khác biệt lớn.  Nhiều hơn một phút nữa.
+* Điều gì sẽ xảy ra nếu thêm các trường vào cuối? Trả lời: Tác hại tối thiểu; có thể rất nhiều (ví dụ, 'covering'). 
 * Reduncancy? Đó là, nếu bạn có cả hai thứ này: INDEX (a), INDEX (a, b)? Trả lời: Reduncy trả phí một cái gì đó trên INSERTs; nó hiếm khi hữu ích cho các SELECT.
 * Prefix? Tức là, INDEX (last_name (5). First_name (5)) Trả lời: Đừng bận tâm; nó hiếm khi giúp, và thường đau. (Chi tiết là một chủ đề khác.)
 
